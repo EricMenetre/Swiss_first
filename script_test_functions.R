@@ -7,6 +7,7 @@ load_functions <- function(){
   source("function_divide_forms.R")
   source("reshaping_data/reshape_eligibility.R")
   source("sanity_check_functions/SC_eligibility.R")
+  source("reshaping_data/reshape_ed_first_cs.R")
 }
 load_functions()
   
@@ -17,10 +18,11 @@ divide_forms(data = data)
 # Reshaping the data for eligibility
 
 reshape_eligibility(eligibility = eligibility)
+reshape_ed_first_cs(ed_first_consult = ed_first_consult)
+
 
 # sanity_check data eligibility 
 
-rm(ed_first_consult, end_study_or_withdrawal, first_cs_after_ed, follow_up_2y, work_up)
 SC_eligibility(eligibility = eligibility)
 
 
