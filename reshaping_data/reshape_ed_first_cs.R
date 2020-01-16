@@ -50,6 +50,7 @@ reshape_ed_first_cs <- function(ed_first_consult){
            family_history.psychiatric = psychiatric_disorder,
            family_history.other = other_family_history_or_de,
            other_drug.dose = dose2,
+           std_EEG.result = normal,
            date.current_episode = current_episode,
            date.1st.consultation = date_of_the_first_consulta,
            date.1st.sz = date_of_first_seizure,
@@ -58,7 +59,8 @@ reshape_ed_first_cs <- function(ed_first_consult){
     mutate(date.1st.consultation = as_date(date.1st.consultation),
            date.1st.sz = as_date(date.1st.sz),
            date.std.eeg = as_date(date.std.eeg),
-           date.cerebral_img = as_date(date.cerebral_img))
+           date.cerebral_img = as_date(date.cerebral_img))%>%
+    select(-age_at_first_seizure)
   
   ed_first_consult$pat_code <<- eligibility$pat_id
 }
