@@ -40,7 +40,17 @@ reshape_ed_first_cs <- function(ed_first_consult){
            drug.LCM = drug___6,
            drug.other = drug___7,
            drug.none = drug___8,
-           other_med_history = other_2,
+           medical_history.other = other_2,
+           medical_history.neurological = neurological,
+           medical_history.cardiac = card_disease,
+           medical_history.psychiatric = psych_disorder,
+           medical_history.psych_retar = psychomotor_retardation,
+           medical_history.febrile_conv = febrile_convulsions,
+           family_history.epilepsy = epilepsy,
+           family_history.psychiatric = psychiatric_disorder,
+           family_history.other = other_family_history_or_de,
+           other_drug.dose = dose2,
+           date.current_episode = current_episode,
            date.1st.consultation = date_of_the_first_consulta,
            date.1st.sz = date_of_first_seizure,
            date.std.eeg = standart_eeg,
@@ -49,7 +59,8 @@ reshape_ed_first_cs <- function(ed_first_consult){
            date.1st.sz = as_date(date.1st.sz),
            date.std.eeg = as_date(date.std.eeg),
            date.cerebral_img = as_date(date.cerebral_img))
- 
+  
+  ed_first_consult$pat_code <<- eligibility$pat_id
 }
 
 
