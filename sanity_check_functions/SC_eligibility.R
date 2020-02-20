@@ -101,7 +101,7 @@ SC_eligibility <- function(eligibility){
         sanity_eligibility$sex[i] <- FALSE
       }
     } else if (code_decomp[5] == "F" | code_decomp[5] == "f"){
-      if (eligibility$sex[i] == 0) {
+      if (eligibility$sex[i] == 2) {
         sanity_eligibility$sex[i] <- TRUE
       } else {
         sanity_eligibility$sex[i] <- FALSE
