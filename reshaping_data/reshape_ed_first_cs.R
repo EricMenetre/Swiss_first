@@ -57,7 +57,6 @@ reshape_ed_first_cs <- function(ed_first_consult){
            date.std.eeg = standart_eeg,
            date.cerebral_img = cerebral_imaging)%>%
     mutate(date.1st.consultation = as_date(date.1st.consultation),
-           date.1st.sz = as_date(date.1st.sz),
            date.std.eeg = as_date(date.std.eeg),
            date.cerebral_img = as_date(date.cerebral_img))%>%
     select(-age_at_first_seizure)
