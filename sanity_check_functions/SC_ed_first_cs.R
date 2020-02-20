@@ -34,7 +34,7 @@ SC_ed_first.cs <- function(ed_first_consult){
   SC_ed_first$diagnosis <- NA
   SC_ed_first$diagnosis_comment <- NA
   SC_ed_first$drugs <- NA
-  SC_ed_first$drugs_commment <- NA
+  SC_ed_first$drugs_comment <- NA
   SC_ed_first$dose_VPA <- NA
   SC_ed_first$dose_LEV <- NA
   SC_ed_first$dose_LTG <- NA
@@ -54,30 +54,7 @@ SC_ed_first.cs <- function(ed_first_consult){
   
   # Check that all the dates are coherent
   for(i in 1:nrow(ed_first_consult)){
-    # Date of first consultation
-    if(is.na(ed_first_consult$date.1st.consultation[i])){
-      SC_ed_first$date.1st.consultation[i] <- FALSE
-      SC_ed_first$date.1st.consultation_comment[i] <- "No date"
-    } else if(as.numeric(ed_first_consult$date.1st.consultation[i]) < as.numeric(ed_first_consult$date.1st.sz[i])){
-      SC_ed_first$date.1st.consultation[i] <- FALSE
-      SC_ed_first$date.1st.consultation_comment[i] <- "Date 1st consult. before date first sz or no date"
-    } else if(as.numeric(ed_first_consult$date.1st.consultation[i]) < as.numeric(ed_first_consult$date.current_episode[i])){
-      SC_ed_first$date.1st.consultation[i] <- FALSE
-      SC_ed_first$date.1st.consultation_comment[i] <- "Date 1st consult. before date current episode or no date"
-    } else {
-      SC_ed_first$date.1st.consultation[i] <- TRUE
-    }
-    # Date of the first seizure
-    if(is.na(ed_first_consult$date.1st.sz[i])){
-      SC_ed_first$date.1st.sz[i] <- FALSE
-      SC_ed_first$date.1st.sz_comment[i] <- "No date"
-    } else if(as.numeric(ed_first_consult$date.1st.sz[i]) > as.numeric(ed_first_consult$date.1st.consultation[i])){
-      SC_ed_first$date.1st.sz[i] <- FALSE
-      SC_ed_first$date.1st.sz_comment[i] <- "Date first sz after date 1st consult. or no date"
-    } else if(as.numeric(ed_first_consult$date.1st.sz[i]) > as.numeric(ed_first_consult$date.current_episode[i])) {
-      SC_ed_first$date.1st.sz[i] <- FALSE
-      SC_ed_first$date.1st.sz_comment[i] <- "Date of 1st sz after date of the current episode or no current episode date"
-    }
+
     # Date of the cerebral img
     
     if(is.na(ed_first_consult$date.cerebral_img[i])){
@@ -164,7 +141,7 @@ SC_ed_first.cs <- function(ed_first_consult){
              ed_first_consult$aura.motor[i] != 0|
              ed_first_consult$aura.deja_vu[i] != 0|
              ed_first_consult$aura.other[i] != 0){
-      if (ed_first_consult$aura[i] != 0){
+      if (ed_first_consult$aura[i] == 0){
         SC_ed_first$aura[i] <- FALSE
         SC_ed_first$aura_comment[i] <- "aura specified but aura set as no in the aura column"
       }
@@ -178,11 +155,13 @@ SC_ed_first.cs <- function(ed_first_consult){
       SC_ed_first$contrib_fact[i] <- FALSE
       SC_ed_first$contrib_fact_comment[i] <- "Missing value"
     } else if (ed_first_consult$contr_fact.OH_intox[i] == 0&
+               ed_first_consult$contr_fact.OH_with[i] == 0&
                ed_first_consult$contr_fact.BZD_with[i] == 0&
                ed_first_consult$contr_fact.antibio[i] == 0&
                ed_first_consult$contr_fact.other_drugs[i] == 0&
                ed_first_consult$contr_fact.high_BP[i] == 0&
                ed_first_consult$contr_fact.sleep_depr[i] == 0&
+               ed_first_consult$contr_fact.faver[i] == 0&
                ed_first_consult$contributing_factors[i] != 0){
       SC_ed_first$contrib_fact[i] <- FALSE
       SC_ed_first$contrib_fact_comment[i] <- "Contributing factor set as present but not specified"
@@ -234,11 +213,12 @@ SC_ed_first.cs <- function(ed_first_consult){
     } else if (ed_first_consult$normal_laboratory[i] == 0 &
                is.na(ed_first_consult$abnormal_values[i])){
       SC_ed_first$laboratory[i] <- FALSE
-      SC_ed_first$laboratory_comment[i] <- "laboratory abnormalities specified but labo marked as normal"
-    } else if (ed_first_consult$normal_laboratory[i] == 1 &
-               !is.na(ed_first_consult$abnormal_values[i])){
-      SC_ed_first$laboratory[i] <- FALSE
       SC_ed_first$laboratory_comment[i] <- "laboratory marked as abnormal but abnormalities not specified"
+    } else if (ed_first_consult$normal_laboratory[i] == 1 &
+               as.character(ed_first_consult$abnormal_values[i]) != ""){
+      SC_ed_first$laboratory[i] <- FALSE
+      SC_ed_first$laboratory_comment[i] <- "laboratory abnormalities specified but labo marked as normal"
+      
     } else {
       SC_ed_first$laboratory[i] <- TRUE
     }
@@ -247,9 +227,11 @@ SC_ed_first.cs <- function(ed_first_consult){
     if (is.na(ed_first_consult$suspicious_imaging[i])){
       SC_ed_first$cerebral_imaging[i] <- FALSE
       SC_ed_first$cerebral_imaging_comment[i] <- "Missing value"
-    } else if (is.na(ed_first_consult$acute_lesion[i])) {
+    } else if (is.na(ed_first_consult$acute_lesion[i])& ed_first_consult$suspicious_imaging[i] == 1) {
       SC_ed_first$cerebral_imaging[i] <- FALSE
       SC_ed_first$cerebral_imaging_comment[i] <- "Missing value in Acute lesion"
+    } else if(is.na(ed_first_consult$acute_lesion[i])){
+      SC_ed_first$cerebral_imaging[i] <- TRUE
     } else if (ed_first_consult$lesion_img.vasc[i] == 0&
                ed_first_consult$lesion_img.infec[i] == 0&
                ed_first_consult$lesion_img.tumor[i] == 0&
@@ -291,7 +273,7 @@ SC_ed_first.cs <- function(ed_first_consult){
        ed_first_consult$drug.other[i] == 0&
        ed_first_consult$drug.none[i] == 0){
       SC_ed_first$drugs[i] <- FALSE
-      SC_ed_first$drugs_commment[i] <- "If no drug was prescribed, the none option should be chosen"
+      SC_ed_first$drugs_comment[i] <- "If no drug was prescribed, the none option should be chosen"
       } else if(ed_first_consult$drug.CBZ[i] == 1|
                 ed_first_consult$drug.VPA[i] == 1|
                 ed_first_consult$drug.LEV[i] == 1|
@@ -301,7 +283,7 @@ SC_ed_first.cs <- function(ed_first_consult){
                 ed_first_consult$drug.other[i] == 1){
                   if (ed_first_consult$drug.none[i] == 1){
                     SC_ed_first$drugs[i] <- FALSE
-                    SC_ed_first$drugs_commment[i] <- "If a drug has been prescribed, the none option should not be chosen"
+                    SC_ed_first$drugs_comment[i] <- "If a drug has been prescribed, the none option should not be chosen"
                   } else {
                     SC_ed_first$drugs[i] <- TRUE
                   }
@@ -371,7 +353,9 @@ ed_first_consult$dose_ltg <- as.character(ed_first_consult$dose_ltg)
     }
 
     # Unfit to drive
-    if (ed_first_consult$unfit_to_drive[i] == 1&
+    if(is.na(ed_first_consult$unfit_to_drive[i])){
+      SC_ed_first$unfit_to_drive[i] <- FALSE
+    }else if(ed_first_consult$unfit_to_drive[i] == 1&
         ed_first_consult$duration[i] == 0){
      SC_ed_first$unfit_to_drive[i] <- FALSE
     } else {
